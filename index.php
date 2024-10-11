@@ -2,6 +2,7 @@
     include_once("php_templates/header.php");
 ?>
     <div id="main-banner">
+        <p></p>
         <h1>Faça seu pedipdo</h1>
     </div>
     <div id="main-container">
