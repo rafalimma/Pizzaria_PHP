@@ -1,8 +1,8 @@
 <?php
     include_once("php_templates/header.php");
 ?>
-    <div id="main-banner">
-        <h1>Faça seu pedipdo</h1>
+    <div id="main-banner" style="background-image: url('images/pizza-banner.jpg');">
+        <h1>Peça a sua Pizza</h1>
     </div>
     <div id="main-container">
         <div class="container">
@@ -28,7 +28,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <input type="submit" class="btn btn-primary" value="Fazer pedido">
+                            <input type="submit" class="btn btn-dark" value="Fazer pedido">
                         </div>
                     </form>
                 </div>
