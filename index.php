@@ -1,8 +1,9 @@
 <?php
     include_once("php_templates/header.php");
 ?>
-    <div id="main-banner" style="background-image: url('images/pizza-banner.jpg');">
-        <h1>Peça a sua Pizza</h1>
+    <div id="main-banner">
+        <p></p>
+        <h1>Faça seu pedipdo</h1>
     </div>
     <div id="main-container">
         <div class="container">
