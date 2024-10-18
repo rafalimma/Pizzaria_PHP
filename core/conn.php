@@ -1,9 +1,9 @@
 <?php
 
-sessio_start();
+session_start();
 
 $user = "root";
-$pass = "";
+$pass = "root33!";
 $db = "pizzaria";
 $host = "localhost";
 
