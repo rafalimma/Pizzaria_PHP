@@ -17,6 +17,21 @@ if ($method == "GET") {
     // print_r($sabores); exit;
 // criação do pedido
 } else if ($method == "POST") {
+    $data = $_POST;
 
+    $borda = $data["borda"];
+    $massa = $data["massa"];
+    $sabores = $data["sabores"];
+
+    // validação de valores maximos
+    if (count($sabores) > 3) {
+        $_SESSION["msg"] = "Selecione no máximo 3 sabores";
+        $_SESSION["status"] = "warning";
+
+    } else {
+        $_SESSION["msg"] = "Pedido feito com Sucesso!";
+        $_SESSION["status"] = "success";
+    }
+    header("Location: ..");
 }
 ?>
