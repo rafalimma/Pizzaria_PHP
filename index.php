@@ -12,6 +12,10 @@
                     <h2>Monte a pizza como desejar</h2>
                     <form method="POST" action="core/pizza.php" id="pizza-form">
                         <div class="form-group">
+                            <label for="nome_cliente">Digite seu nome:</label>
+                            <input class="form-control" type="text" name="nome_cliente" id="nome_cliente">
+                        </div>
+                        <div class="form-group">
                             <label for="borda">Borda:</label>
                             <select name="borda" id="borda" class="form-control">
                                 <option value="">Selecione a borda</option>
