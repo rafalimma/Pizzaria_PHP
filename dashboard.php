@@ -35,7 +35,7 @@
                     <h2>Gerenciar Pedidos:</h2>
                 </div>
                 <div class="col-md-12 table-container">
-                    <table class="table">
+                    <table class="table" style="text-align: left;">
                         <thead>
                             <tr>
                                 <th scope="col"><span>Pedido</span>#</th>
@@ -59,7 +59,7 @@
                                             <option value="">Entrega</option>
                                         </select>
                                         <button type="submit" class="update-btn">
-                                            <i class="fas fa-sync-alt"></i>
+                                            <i class="fas fa-sync-alt" style="color: blue;"></i>
                                         </button>
                                     </form>
 
@@ -69,7 +69,7 @@
                                         <input type="hidden" name="type" value="delete">
                                         <input type="hidden" name="id" value="1">
                                         <button type="submit" class="update-btn">
-                                            <i class="fas fa-times"></i>
+                                            <i class="fas fa-times" style="color: red;"></i>
                                         </button>
                                     </form>
                                 </td>
