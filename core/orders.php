@@ -1,7 +1,7 @@
 <?php
 
-include_once("conn.php");
-$method = $_SERVER["RESQUEST_METHOD"];
+include_once "conn.php";
+$method = $_SERVER["REQUEST_METHOD"];
 
 if($method === "GET") {
     $pedidosQuery = $conn->query("SELECT * FROM pedidos;");
@@ -10,7 +10,7 @@ if($method === "GET") {
     foreach($pedidos as $pedido) {
         $pizzas = [];
 
-        $pizza["id"] = $pedido["pizza_id"];
+        $pizza["id"] = $pedido["pizzas_id"];
         // resgatando a pizza
         $pizzaQuery = $conn->prepare("SELECT * FROM pizzas WHERE id = :pizza_id");
         $pizzaQuery->bindParam(":pizza_id", $pizza["id"]);
@@ -20,7 +20,7 @@ if($method === "GET") {
         $pizzaData = $pizzaQuery->fetch(PDO::FETCH_ASSOC);
         // resgatando a borda
         $bordaQuery = $conn->prepare("SELECT * FROM bordas WHERE id = :borda_id");
-        $bordaQuery->bindParam(":bordas_id", $pizzaData["bordas_id"]);
+        $bordaQuery->bindParam(":borda_id", $pizzaData["borda_id"]);
 
         $bordaQuery->execute();
 
@@ -28,7 +28,7 @@ if($method === "GET") {
         $pizza["borda"] = $borda["tipo"];
         // tranzendo a massa
         $massaQuery = $conn->prepare("SELECT * FROM massas WHERE id = :massa_id");
-        $massaQuery->bindParam(":massas_id", $pizzaData["massas_id"]);
+        $massaQuery->bindParam(":massa_id", $pizzaData["massa_id"]);
 
         $massaQuery->execute();
 
@@ -41,7 +41,7 @@ if($method === "GET") {
 
         $saborQuery->execute();
 
-        $sabor = $saborQuery->fetchAll(PDO::FETCH_ASSOC);
+        $sabores = $saborQuery->fetchAll(PDO::FETCH_ASSOC);
         
         //nome dos sabores
 
@@ -49,9 +49,22 @@ if($method === "GET") {
         $saborQuery = $conn->prepare("SELECT * FROM sabores WHERE id = :sabor_id");
 
         foreach($sabores as $sabor) {
-            
+            $saborQuery->bindParam(":sabor_id", $sabor["sabor_id"]);
+
+            $saborQuery->execute();
+
+            $saborPizza = $saborQuery->fetch(PDO::FETCH_ASSOC);
+            array_push($saboresDaPizza, $saborPizza["nome"]);
+
         }
+
+        $pizza["sabores"] = $saboresDaPizza;
+        $pizza["status"] = $pedido["status_id"];
+
+        // adicionar o array de pizza ao das pizzas
+        array_push($pizzas, $pizza);
     }
+    print_r($pizzas);
 } else if($method === "POST") {
 
 }

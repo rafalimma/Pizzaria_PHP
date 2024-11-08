@@ -1,5 +1,6 @@
 <?php
     include_once("php_templates/header.php");
+    include_once("core/orders.php");
 ?>
 
     <style>
