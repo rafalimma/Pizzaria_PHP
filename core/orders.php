@@ -3,13 +3,15 @@
 include_once "conn.php";
 $method = $_SERVER["REQUEST_METHOD"];
 
+// se o metodo for GET:
 if($method === "GET") {
+    // resgata todos os pedidos com SELECT
     $pedidosQuery = $conn->query("SELECT * FROM pedidos;");
     $pedidos = $pedidosQuery->fetchAll();
 
     foreach($pedidos as $pedido) {
         $pizzas = [];
-
+        // define um array para a pizza
         $pizza["id"] = $pedido["pizzas_id"];
         // resgatando a pizza
         $pizzaQuery = $conn->prepare("SELECT * FROM pizzas WHERE id = :pizza_id");
@@ -36,7 +38,7 @@ if($method === "GET") {
         $pizza["massa"] = $massa["tipo"];
         // trazendo sabores da pizza
 
-        $saborQuery = $conn->prepare("SELECT * FROM pizza_sabor WHERE $pizza_id = :pizza_id");
+        $saborQuery = $conn->prepare("SELECT * FROM pizza_sabor WHERE id = :pizza_id");
         $saborQuery->bindParam(":pizza_id", $pizza["id"]);
 
         $saborQuery->execute();
@@ -46,19 +48,20 @@ if($method === "GET") {
         //nome dos sabores
 
         $saboresDaPizza = [];
-        $saborQuery = $conn->prepare("SELECT * FROM sabores WHERE id = :sabor_id");
+        $saborIndivdQuery = $conn->prepare("SELECT * FROM sabores WHERE id = :sabor_id");
 
         foreach($sabores as $sabor) {
-            $saborQuery->bindParam(":sabor_id", $sabor["sabor_id"]);
+            $saborIndivdQuery->bindParam(":sabor_id", $sabor["sabores_id"]);
 
-            $saborQuery->execute();
+            $saborIndivdQuery->execute();
 
-            $saborPizza = $saborQuery->fetch(PDO::FETCH_ASSOC);
-            array_push($saboresDaPizza, $saborPizza["nome"]);
+            $saborPizza = $saborIndivdQuery->fetch(PDO::FETCH_ASSOC);
+            array_push($saboresDaPizza, $saborPizza["sabor"]);
 
         }
 
         $pizza["sabores"] = $saboresDaPizza;
+        // adiciona status do pedido
         $pizza["status"] = $pedido["status_id"];
 
         // adicionar o array de pizza ao das pizzas
