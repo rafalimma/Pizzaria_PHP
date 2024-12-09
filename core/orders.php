@@ -9,8 +9,10 @@ if($method === "GET") {
     $pedidosQuery = $conn->query("SELECT * FROM pedidos;");
     $pedidos = $pedidosQuery->fetchAll();
 
+    $pizzas = [];
+
     foreach($pedidos as $pedido) {
-        $pizzas = [];
+        $pizza = [];
         // define um array para a pizza
         $pizza["id"] = $pedido["pizzas_id"];
         // resgatando a pizza
@@ -68,6 +70,10 @@ if($method === "GET") {
         array_push($pizzas, $pizza);
     }
     print_r($pizzas);
+    $statusQuery = $conn->query("SELECT * FROM status;");
+
+    $status = $statusQuery->fetchAll();
+
 } else if($method === "POST") {
 
 }
