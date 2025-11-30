@@ -1,71 +1,88 @@
 <?php
 
-include_once("conn.php");
+  include_once("conn.php");
 
-// ver qual metodo esta vindo da requisição
-$method = $_SERVER["REQUEST_METHOD"];
-// resgate dos dados, montagem do pedido
-if ($method == "GET") {
+  $method = $_SERVER["REQUEST_METHOD"];
+
+  // Resgate dos dados, montagem do pedido
+  if($method === "GET") {
+
     $bordasQuery = $conn->query("SELECT * FROM bordas;");
+
     $bordas = $bordasQuery->fetchAll();
 
     $massasQuery = $conn->query("SELECT * FROM massas;");
+
     $massas = $massasQuery->fetchAll();
 
     $saboresQuery = $conn->query("SELECT * FROM sabores;");
-    $sabores = $saboresQuery->fetchAll();// aqui a query é transferida para um array
-    // print_r($sabores); exit;
-// criação do pedido
-} else if ($method == "POST") {
+
+    $sabores = $saboresQuery->fetchAll();
+  
+  // Criação do pedido
+  } else if($method === "POST") {
+
     $data = $_POST;
 
     $borda = $data["borda"];
     $massa = $data["massa"];
     $sabores = $data["sabores"];
-    $nome_cliente = $data["nome_cliente"];
 
-    // validação de valores maximos
-    if (count($sabores) > 3) {
-        $_SESSION["msg"] = "Selecione no máximo 3 sabores";
-        $_SESSION["status"] = "warning";
+    // validação de sabores máximos
+    if(count($sabores) > 3) {
+
+      $_SESSION["msg"] = "Selecione no máximo 3 sabores!";
+      $_SESSION["status"] = "warning";
 
     } else {
-        // salvando borda e massa da pizza:
-        $stmt = $conn->prepare("INSERT INTO pizzas (borda_id, massa_id) VALUES (:borda, :massa)
-        ");
-        // filtrando inputs
 
-        $stmt->bindParam(":borda", $borda, PDO::PARAM_INT);
-        $stmt->bindParam(":massa", $massa, PDO::PARAM_INT);
-        $stmt->execute();
-        // resgatando o ultimo id e a ultima pizza
-        $pizzaid = $conn->lastInsertId();
-        $stmt = $conn->prepare("INSERT INTO pizza_sabor (pizzas_id, sabores_id) VALUES
-        (:pizza, :sabor)");
+      // salvando borda e massa na pizza
+      $stmt = $conn->prepare("INSERT INTO pizzas (borda_id, massa_id) VALUES (:borda, :massa)");
 
-        // repetição ate salvar todos os sabores
-        foreach($sabores as $sabor) {
-            // filtra inputs
-            $stmt->bindParam(":pizza", $pizzaid, PDO::PARAM_INT);
-            $stmt->bindParam(":sabor", $sabor, PDO::PARAM_INT);
+      // filtrando inputs
+      $stmt->bindParam(":borda", $borda, PDO::PARAM_INT);
+      $stmt->bindParam(":massa", $massa, PDO::PARAM_INT);
 
-            $stmt->execute();
-        }
-        // criando pedido
+      $stmt->execute();
 
-        $stmt = $conn->prepare("INSERT INTO pedidos (nome_cliente, pizzas_id, status_id) VALUES
-        (:nome_cliente, :pizza, :status)");
+      // resgatando último id da última pizza
+      $pizzaId = $conn->lastInsertId();
 
-        $statusId = 1;
+      $stmt = $conn->prepare("INSERT INTO pizza_sabor (pizza_id, sabor_id) VALUES (:pizza, :sabor)");
 
-        $stmt->bindParam(":pizza", $pizzaid);
-        $stmt->bindParam(":status", $statusId);
-        $stmt->bindParam(":nome_cliente", $nome_cliente);
+      // repetição até terminar de salvar todos os sabores
+      foreach($sabores as $sabor) {
+
+        // filtrando os inputs
+        $stmt->bindParam(":pizza", $pizzaId, PDO::PARAM_INT);
+        $stmt->bindParam(":sabor", $sabor, PDO::PARAM_INT);
 
         $stmt->execute();
 
-        $_SESSION["msg"] = "Pedido feito com Sucesso!";
-        $_SESSION["status"] = "success";
+      }
+
+      // criar o pedido da pizza
+      $stmt = $conn->prepare("INSERT INTO pedidos (pizza_id, status_id) VALUES (:pizza, :status)");
+
+      // status -> sempre inicia com 1, que é em produção
+      $statusId = 1;
+
+      // filtrar inputs
+      $stmt->bindParam(":pizza", $pizzaId);
+      $stmt->bindParam(":status", $statusId);
+
+      $stmt->execute();
+
+      // Exibir mensagem de sucesso
+      $_SESSION["msg"] = "Pedido realizado com sucesso";
+      $_SESSION["status"] = "success";
+
     }
+
+    // Retorna para página inicial
     header("Location: ..");
-}
+
+  }
+
+?>
+
